@@ -1,13 +1,7 @@
-//exportamos express
+import colors from 'colors'
+//exportamos server desde el archivo ya que ahi esta express
+import server from "./server"
 
-import express from 'express'; //ESM
-//instaciamos el app
-const app=express()
-
-//Routing
-app.get('/',(req,res)=>{
-    res.send('Hola Mundo desde Express')
-})
 //podemos definir mas rutas
 
 
@@ -15,6 +9,6 @@ app.get('/',(req,res)=>{
 //definimos el puerto Y agregamos variable de entorno
 const port=process.env.PORT ||4000
 //Arroy funcition para definir mas limpio una funcion 
-app.listen(port,()=> {
-    console.log('Servidor funcionando en el puerto ',port);
+server.listen(port,()=> {
+    console.log(colors.bgBlue.magenta.italic('Servidor funcionando en el puerto '),port);
 })
