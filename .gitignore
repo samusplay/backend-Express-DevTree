@@ -3,3 +3,4 @@
 package-lock.json
 .Ds_store
 dist/
+node_modules/
