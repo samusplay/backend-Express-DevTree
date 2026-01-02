@@ -3,6 +3,8 @@ import mongoose, { Schema } from "mongoose";
 
 //La informacion que requiere 
 interface IUser {
+    //agregamos handle
+    handle:string
     name:string
     email:string
     password:string                                                                                                                                                                                
@@ -12,6 +14,14 @@ interface IUser {
 const userSchema = new Schema({
     //Objeto modelo
     //Reglas de registros
+      handle: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true,
+        unique:true
+
+    },
     name: {
         type: String,
         required: true,
@@ -23,7 +33,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
+        unique: true,
+        lowercase:true
 
     },
 
