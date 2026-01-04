@@ -5,7 +5,7 @@ import User from "../models/User";
 import { hashPassword } from "../utils/auth";
 //Tener cuidado con Any
 export const createAccount = async (req: Request, res: Response) => {
-  console.log("Desde Register");
+  
   //Manejar  errores
   let errors=validationResult(req)
   if(!errors.isEmpty()){
