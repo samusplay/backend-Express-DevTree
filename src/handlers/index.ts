@@ -50,3 +50,30 @@ export const createAccount = async (req: Request, res: Response) => {
   //configurar respuesta hasta ahi llega el codigo
   res.status(201).send("Registro Creado Correctamente ");
 };
+
+export const login=async(req:Request,res:Response)=>{
+//Manejar  errores
+  let errors=validationResult(req)
+  if(!errors.isEmpty()){
+    //Si el arreglo de errores esta vacio
+    return res.status(400).json({errors:errors.array()})
+  }
+
+  //luego se pasa de la comprobacion 
+
+   //Validaciones
+  const { email, password } = req.body;
+
+  //Revisar si el usuario esta registrado
+  //Metodo de moongose para buscr y pasamos objeto
+  const user = await User.findOne({ email });
+  //Validaciones
+  if (!user) {
+    const error = new Error("El usuario no existe");
+    //debe detener la respuesta conn el objeto y parar
+    return res.status(404).json({ error: error.message });
+  }
+
+  //Comprobar el password
+
+}
