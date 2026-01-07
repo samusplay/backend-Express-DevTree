@@ -8,3 +8,12 @@ export const hashPassword=async(password:string)=>{
     return await brcypt.hash(password,salt)
 
 }
+
+//funcion para el inicio de sesion
+
+export const checkPassword=async(enteredPassword:string, hash:string)=>{
+    //metodo para comparar de la misma funcion
+    return await brcypt.compare(enteredPassword,hash)
+    
+
+}
