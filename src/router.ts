@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import { createAccount, login } from './handlers'
+import { handleInputErrors } from './middleware/validation'
 
 const router = Router()
 
@@ -16,7 +17,7 @@ router.post('/auth/register',
     body('name')
         .notEmpty()
         .withMessage('El nombre no puede ir vacio '),
-    
+
     //Validar el campo de email
     body('email')
         .isEmail()
@@ -24,9 +25,11 @@ router.post('/auth/register',
 
     //Validar el campo del password
     body('password')
-        .isLength({min:8})
+        .isLength({ min: 8 })
         .withMessage('El password  no puede ir vacio '),
 
+    //manejar los errores
+    handleInputErrors,
     createAccount
 )
 
@@ -43,7 +46,7 @@ router.post('/auth/login',
         .withMessage('El password es obligatorio '),
 
 
-
+    handleInputErrors,
     login
 )
 
