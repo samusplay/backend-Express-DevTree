@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import slug from 'slug';
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
+import { generateJWT } from "../utils/jwt";
 //Tener cuidado con Any
 export const createAccount = async (req: Request, res: Response) => {
   
@@ -77,6 +78,9 @@ export const login=async(req:Request,res:Response)=>{
     //debe detener la respuesta conn el objeto y parar
     return res.status(401).json({ error: error.message });
   }
-  res.send('Autenticado...')
+
+  //Retornar el JWT con la informacion necesaria tarvez de un objeto
+  const token=generateJWT({id:user._id})
+  res.send(token)
   
 }
