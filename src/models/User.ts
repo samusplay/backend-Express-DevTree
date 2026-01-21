@@ -2,7 +2,7 @@
 import mongoose, { Schema } from "mongoose";
 
 //La informacion que requiere 
-interface IUser {
+ export interface IUser {
     //agregamos handle
     handle:string
     name:string
