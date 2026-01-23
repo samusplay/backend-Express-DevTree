@@ -14,11 +14,13 @@
   "dependencies": {
     "@mongodb-js/saslprep": "^1.4.4",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
+    "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
     "saslprep": "^1.0.3",

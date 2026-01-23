@@ -105,7 +105,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     req.user.handle=handle
     //Guardamos
     await req.user.save()
-    res.send('Perfil actualizado Correcatmente')
+    res.send('Perfil actualizado Correctamente')
 
 
   } catch (e) {
