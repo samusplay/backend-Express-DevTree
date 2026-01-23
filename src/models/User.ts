@@ -1,8 +1,8 @@
 //Importamos mongoose
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema,Document } from "mongoose";
 
 //La informacion que requiere 
- export interface IUser {
+ export interface IUser extends Document{
     //agregamos handle
     handle:string
     name:string

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { createAccount, getUser, login } from './handlers'
+import { createAccount, getUser, login, updateProfile } from './handlers'
 import { handleInputErrors } from './middleware/validation'
 import { authenticate } from './middleware/auth'
 
@@ -51,7 +51,23 @@ router.post('/auth/login',
     login
 )
 //Le pasamos el midlware
-router.get('/user',authenticate,getUser)
+router.get('/user', authenticate, getUser)
+//enpoint con patch solo modifcamos valores especificos
+router.patch('/user',
+    //validacion
+    //Reglas de validacion
+    body('handle')
+        .notEmpty()
+        .withMessage('El handle no puede ir vacio '),
+    //validar los campos del name 
+    body('description')
+        .notEmpty()
+        .withMessage('La descripcion no puede ir vacia '),
+
+    handleInputErrors,
+    authenticate,
+    updateProfile
+)
 
 
 export default router
