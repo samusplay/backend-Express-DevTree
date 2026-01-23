@@ -7,7 +7,8 @@ import mongoose, { Schema } from "mongoose";
     handle:string
     name:string
     email:string
-    password:string                                                                                                                                                                                
+    password:string 
+    description:string                                                                                                                                                                               
 }
 //Definimos el tipo de dato
 //Codigo moongosee
@@ -45,6 +46,10 @@ const userSchema = new Schema({
 
     },
     //Podemos agregar mas modelos 
+    description:{
+        type:String,
+        default:''
+    }
 
 })
 
