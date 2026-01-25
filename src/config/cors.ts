@@ -1,5 +1,5 @@
 import { CorsOptions } from "cors";
-
+console.log(process.env.FRONTEND_URL);
 export const corsConfig:CorsOptions={
     //Quien quiere conectarse al servidor
     origin:function(origin,callback){
