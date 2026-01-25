@@ -1,12 +1,18 @@
-import { Request, Response} from "express";
+import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import slug from 'slug';
+//Para subir archivos con express usar formidable
+import formidable from 'formidable'
+import {v4 as uuid}from 'uuid'
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
+import { generateJWT } from "../utils/jwt";
+import cloudinary from "../config/cloudinary";
+
 //Tener cuidado con Any
 export const createAccount = async (req: Request, res: Response) => {
-  
-  
+
+
 
   //Validaciones
   const { email, password } = req.body;
@@ -22,12 +28,11 @@ export const createAccount = async (req: Request, res: Response) => {
 
   //Revisar que un usuario no tenga el mismo handle
   //utilizamos la funcion de slug con un modificador
-  const handle=slug(req.body.handle,'-')
-
-  const handleExists=await User.findOne({handle})
-  if(handleExists){
-    const error=new Error('Nombre de usuario no disponible')
-    return res.status(409).json({error:error.message})
+  const handle = slug(req.body.handle, '-')
+  const handleExists = await User.findOne({ handle })
+  if (handleExists) {
+    const error = new Error('Nombre de usuario no disponible')
+    return res.status(409).json({ error: error.message })
   }
 
   //para guardar en la base de datos
@@ -35,10 +40,10 @@ export const createAccount = async (req: Request, res: Response) => {
   //la funcion de Utils es asincrona 
   //Aqui ponemos lo que ingresa el usuario
   user.password = await hashPassword(password);
-  user.handle=handle
+  user.handle = handle
 
-  
- 
+
+
 
   await user.save();
 
@@ -46,17 +51,17 @@ export const createAccount = async (req: Request, res: Response) => {
   res.status(201).send("Registro Creado Correctamente ");
 };
 
-export const login=async(req:Request,res:Response)=>{
-//Manejar  errores
-  let errors=validationResult(req)
-  if(!errors.isEmpty()){
+export const login = async (req: Request, res: Response) => {
+  //Manejar  errores
+  let errors = validationResult(req)
+  if (!errors.isEmpty()) {
     //Si el arreglo de errores esta vacio
-    return res.status(400).json({errors:errors.array()})
+    return res.status(400).json({ errors: errors.array() })
   }
 
   //luego se pasa de la comprobacion 
 
-   //Validaciones
+  //Validaciones
   const { email, password } = req.body;
 
   //Revisar si el usuario esta registrado
@@ -71,12 +76,75 @@ export const login=async(req:Request,res:Response)=>{
 
   //Comprobar el password
   //Es necesario que espere
-  const isPasswordCorrect= await checkPassword(password,user.password)
+  const isPasswordCorrect = await checkPassword(password, user.password)
   if (!isPasswordCorrect) {
     const error = new Error("Password Incorrecto");
     //debe detener la respuesta conn el objeto y parar
     return res.status(401).json({ error: error.message });
   }
-  res.send('Autenticado...')
-  
+
+  //Retornar el JWT con la informacion necesaria tarvez de un objeto
+  const token = generateJWT({ id: user._id })
+  res.send(token)
+
+}
+
+export const getUser = async (req: Request, res: Response) => {
+  res.json(req.user)
+}
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { description } = req.body
+
+    const handle = slug(req.body.handle, '-')
+    const handleExists = await User.findOne({ handle })
+    //Condicion para que el usuario actualize si es el mismo
+    if (handleExists && handleExists.email !== req.user.email) {
+      const error = new Error('Nombre de usuario no disponible')
+      return res.status(409).json({ error: error.message })
+    }
+    //Actualizar el usuario
+    req.user.description = description
+    req.user.handle = handle
+    //Guardamos
+    await req.user.save()
+    res.send('Perfil actualizado Correctamente')
+
+
+  } catch (e) {
+    const error = new Error('Hubo un error')
+    return res.status(500).json({ error: error.message })
+  }
+}
+
+export const uploadImage = async (req: Request, res: Response) => {
+  const form = formidable({
+    //subir una foto
+    multiples: false
+  })
+
+
+  try {
+    //foto que el usuario ya subio
+    form.parse(req, (error, fields, files) => {
+
+      cloudinary.uploader.upload(files.file[0].filepath, {public_id:uuid()}, async function (error, result) {
+        if (error) {
+          const error = new Error('Hubo un error al subir la imagen')
+          return res.status(500).json({ error: error.message })
+        }
+        if(result){
+          req.user.image=result.secure_url
+          //guardamos la url del usuario
+          await req.user.save()
+          //Retornar la afrontend
+          res.json({image:result.secure_url})
+        }
+      })
+    })
+  } catch (e) {
+    const error = new Error('Hubo un error')
+    return res.status(500).json({ error: error.message })
+  }
 }
