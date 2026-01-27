@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import slug from 'slug';
 //Para subir archivos con express usar formidable
-import formidable from 'formidable'
-import {v4 as uuid}from 'uuid'
+import formidable from 'formidable';
+import { v4 as uuid } from 'uuid';
+import cloudinary from "../config/cloudinary";
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
 import { generateJWT } from "../utils/jwt";
-import cloudinary from "../config/cloudinary";
 
 //Tener cuidado con Any
 export const createAccount = async (req: Request, res: Response) => {
@@ -95,7 +95,8 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const { description } = req.body
+    //agregamos nuevo cambio al request
+    const { description,links} = req.body
 
     const handle = slug(req.body.handle, '-')
     const handleExists = await User.findOne({ handle })
@@ -107,6 +108,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     //Actualizar el usuario
     req.user.description = description
     req.user.handle = handle
+    req.user.links=links
     //Guardamos
     await req.user.save()
     res.send('Perfil actualizado Correctamente')

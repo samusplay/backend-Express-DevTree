@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
 import { createAccount, getUser, login, updateProfile, uploadImage } from './handlers'
-import { handleInputErrors } from './middleware/validation'
 import { authenticate } from './middleware/auth'
+import { handleInputErrors } from './middleware/validation'
 
 const router = Router()
 
@@ -52,6 +52,7 @@ router.post('/auth/login',
 )
 //Le pasamos el midlware
 router.get('/user', authenticate, getUser)
+
 //enpoint con patch solo modifcamos valores especificos
 router.patch('/user',
     //validacion

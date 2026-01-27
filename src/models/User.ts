@@ -1,5 +1,5 @@
 //Importamos mongoose
-import mongoose, { Schema,Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 //La informacion que requiere 
  export interface IUser extends Document{
@@ -9,7 +9,8 @@ import mongoose, { Schema,Document } from "mongoose";
     email:string
     password:string 
     description:string
-    image:string                                                                                                                                                                               
+    image:string
+    links:string                                                                                                                                                                               
 }
 //Definimos el tipo de dato
 //Codigo moongosee
@@ -55,6 +56,10 @@ const userSchema = new Schema({
         type:String,
         default:''
 
+    },
+    links:{
+        type:String,
+        default:'[]'
     }
 
 })
