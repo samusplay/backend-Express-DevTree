@@ -150,3 +150,24 @@ export const uploadImage = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message })
   }
 }
+
+
+export const getUserByHandle = async (req: Request, res: Response) =>{
+
+  try {
+    //logica recuperar no desde.req.body sino desde la url
+   const {handle}=req.params
+   //consultar la base de datos
+   const user=await User.findOne({handle}).select('-_id -__v -email -password')
+   if(!user){
+    const error= new Error('El usuario no existe')
+    return res.status(400).json({error:error.message})
+   }
+   res.json(user)
+
+  } catch (e) {
+     const error = new Error('Hubo un error')
+    return res.status(500).json({ error: error.message })
+  }
+
+}
