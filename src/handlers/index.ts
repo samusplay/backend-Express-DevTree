@@ -171,3 +171,21 @@ export const getUserByHandle = async (req: Request, res: Response) =>{
   }
 
 }
+
+export const searchByHandle = async (req: Request, res: Response) =>{
+  try {
+    //validar si ya esta tomado
+    const {handle}=req.body
+    const userExists=await User.findOne({handle})
+    //si existe el handle
+    if(userExists){
+      const error=new Error(`${handle} ya esta registrado`)
+      return res.status(409).json({error:error.message})
+    }
+    //si el handle no existe
+    res.send(`${handle} esta disponible el usuario`)
+  } catch (e) {
+     const error = new Error('Hubo un error')
+    return res.status(500).json({ error: error.message })
+  }
+}
